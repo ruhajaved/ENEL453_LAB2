@@ -5,7 +5,8 @@ use ieee.numeric_std.all;
 entity top_level is
     Port ( clk                           : in  STD_LOGIC;
            reset_n                       : in  STD_LOGIC;
-			  SW                            : in  STD_LOGIC_VECTOR (9 downto 0);
+		   SW                            : in  STD_LOGIC_VECTOR (9 downto 0);
+		   PB2							 : in std_logic;
            LEDR                          : out STD_LOGIC_VECTOR (9 downto 0);
            HEX0,HEX1,HEX2,HEX3,HEX4,HEX5 : out STD_LOGIC_VECTOR (7 downto 0)
           );
@@ -32,6 +33,19 @@ Component Synchronizer is
 			clk    : in std_logic;
 			SW_int : out std_logic_vector (9 downto 0)
 			);
+End Component;
+
+Component debounce is
+	GENERIC(
+		clk_freq    : INTEGER := 50_000_000;
+		stable_time : INTEGER := 30
+		   );        
+	  PORT(
+		clk     : IN  STD_LOGIC;  --input clock
+		reset_n : IN  STD_LOGIC;  --asynchronous active low reset
+		button  : IN  STD_LOGIC;  --input signal to be debounced
+		result  : OUT STD_LOGIC   --debounced signal
+		  ); 
 End Component;
 
 Component SevenSegment is
@@ -74,6 +88,14 @@ Synchronizer_ins: Synchronizer
 		clk => clk,
 		SW_int => SW_int
 		);
+		
+debounce_ins: debounce
+	PORT MAP(
+		clk => clk,
+		reset_n => reset_n,
+		button => PB2,
+		result => s				-- change once you know it's working
+		);
 
 MUX2TO1_ins: MUX2TO1                               
    PORT MAP(
@@ -104,7 +126,7 @@ SevenSegment_ins: SevenSegment
 LEDR(9 downto 0) <=SW_int(9 downto 0); -- gives visual display of the switch inputs to the LEDs on board
 switch_inputs <= "00000" & SW_int(7 downto 0);
 in2 <= "000" & switch_inputs(12 downto 0);
-s <=SW_int(9);
+--s <=SW_int(9); -- COMMENTED OUT TO TEST DEBOUNCER!	
 
 binary_bcd_ins: binary_bcd                               
    PORT MAP(
