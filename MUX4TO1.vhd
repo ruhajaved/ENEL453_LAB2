@@ -32,9 +32,9 @@ begin
 --	end process;
 
 	with s select
-		 mux_out <= in1 when "00", -- when s = 00 then mux_out becomes in1
-						in2 when "01", -- when s = 01 then mux_out becomes in2
-						in3 when "10", -- when s = 10 then mux_out becomes in3
-						in4 when "11";	-- when s = 11 then mux_out becomes in4
+		 mux_out <= in1 when "00",    -- when s = 00 then mux_out becomes in1
+						in2 when "01",    -- when s = 01 then mux_out becomes in2
+						in3 when "10",    -- when s = 10 then mux_out becomes in3
+						in4 when others;	-- otherwise mux_out becomes in4
 					   
 end BEHAVIOR; -- can also be written as "end;"
