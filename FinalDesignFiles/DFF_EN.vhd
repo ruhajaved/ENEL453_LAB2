@@ -13,10 +13,10 @@ architecture BEHAVIOUR of DFF_EN is
 begin
 	process (clk, RST)
 	begin
-		if (RST = '0') then
+		if (RST = '0') then	-- asynchornous, active-low reset
 			Q <= "0000"&"0000"&"0000"&"0000";
 		elsif rising_edge(clk) then
-			if (EN = '0') then
+			if (EN = '0') then -- active-low enable
 				Q <= D;
 			end if;
 		end if;
